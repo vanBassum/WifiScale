@@ -18,6 +18,8 @@ public:
 
 		gpio_set_direction(SCK, GPIO_MODE_OUTPUT);
 		gpio_set_direction(DOUT, GPIO_MODE_INPUT);
+
+		gpio_set_pull_mode(DOUT, GPIO_PULLDOWN_ONLY);
 	}
 
 

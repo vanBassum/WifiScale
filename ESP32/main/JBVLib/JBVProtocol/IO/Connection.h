@@ -44,8 +44,22 @@ public:
 
     }
 
+
+
+protected:
     virtual bool SendData(uint8_t *data, uint8_t length) = 0;
 
+    void HandleData(uint8_t *data, uint8_t length)
+	{
+		framing.Unstuff(data, length);
+	}
+
+	void HandleData(uint8_t data)
+	{
+		framing.Unstuff(data);
+	}
+
+public:
     void SendFrame(Frame *frame)
 	{
     	uint32_t escapedSize = Framing::GetEscapedSize(frame)+8;
@@ -68,18 +82,6 @@ public:
 			ESP_LOGE("Connection.h", "Escaping failed.");
 		}
 
-	}
-
-protected:
-
-    void HandleData(uint8_t *data, uint8_t length)
-	{
-		framing.Unstuff(data, length);
-	}
-
-	void HandleData(uint8_t data)
-	{
-		framing.Unstuff(data);
 	}
 
 

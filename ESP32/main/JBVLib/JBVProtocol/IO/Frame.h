@@ -103,14 +103,33 @@ public:
 
 	bool GetBroadcast()
 	{
-		return OPT && 0x01;
+		return (OPT & (0x01 << 0)) > 0;
 	}
 
 	bool SetBroadcast(bool val)
 	{
-		return OPT |= val;
+		return OPT |= (val << 0);
 	}
 
+	bool GetRoutingInfo()
+	{
+		return (OPT & (0x01 << 1)) > 0;
+	}
+
+	bool SetRoutingInfo(bool val)
+	{
+		return OPT |= (val << 1);
+	}
+
+	bool GetOverflow()
+	{
+		return (OPT & (0x01 << 2)) > 0;
+	}
+
+	bool SetOverflow(bool val)
+	{
+		return OPT |= (val << 2);
+	}
 
 	uint32_t Size()
 	{
