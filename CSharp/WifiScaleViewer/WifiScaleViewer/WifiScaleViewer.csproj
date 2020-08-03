@@ -54,6 +54,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -75,6 +78,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Lib\FRMLib\FRMLib.csproj">
+      <Project>{6062fc18-1c98-4f9a-be4c-44171cbcb55e}</Project>
+      <Name>FRMLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Lib\STDLib\STDLib.csproj">
+      <Project>{4e6c1292-7e2f-47a9-8ebc-6437a8ef3fb5}</Project>
+      <Name>STDLib</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

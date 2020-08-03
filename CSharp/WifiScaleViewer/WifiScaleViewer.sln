@@ -5,6 +5,10 @@ VisualStudioVersion = 16.0.30204.135
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WifiScaleViewer", "WifiScaleViewer\WifiScaleViewer.csproj", "{8C5DB78D-5E30-4EAD-8517-1EA37CF55742}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FRMLib", "..\Lib\FRMLib\FRMLib.csproj", "{6062FC18-1C98-4F9A-BE4C-44171CBCB55E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "STDLib", "..\Lib\STDLib\STDLib.csproj", "{4E6C1292-7E2F-47A9-8EBC-6437A8EF3FB5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{8C5DB78D-5E30-4EAD-8517-1EA37CF55742}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8C5DB78D-5E30-4EAD-8517-1EA37CF55742}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8C5DB78D-5E30-4EAD-8517-1EA37CF55742}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6062FC18-1C98-4F9A-BE4C-44171CBCB55E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6062FC18-1C98-4F9A-BE4C-44171CBCB55E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6062FC18-1C98-4F9A-BE4C-44171CBCB55E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6062FC18-1C98-4F9A-BE4C-44171CBCB55E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E6C1292-7E2F-47A9-8EBC-6437A8EF3FB5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E6C1292-7E2F-47A9-8EBC-6437A8EF3FB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E6C1292-7E2F-47A9-8EBC-6437A8EF3FB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E6C1292-7E2F-47A9-8EBC-6437A8EF3FB5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
