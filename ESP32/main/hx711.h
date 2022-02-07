@@ -18,7 +18,6 @@ public:
 
 		gpio_set_direction(SCK, GPIO_MODE_OUTPUT);
 		gpio_set_direction(DOUT, GPIO_MODE_INPUT);
-
 		gpio_set_pull_mode(DOUT, GPIO_PULLDOWN_ONLY);
 	}
 
@@ -28,11 +27,8 @@ public:
 	{
 		uint32_t count = 0;
 		uint8_t i;
-
 		vTaskSuspendAll ();
-
 		gpio_set_level(SCK, 0);
-
 		while(gpio_get_level(DOUT));
 
 		for (i=0;i<24;i++)
