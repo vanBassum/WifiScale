@@ -1,3 +1,6 @@
 [submodule "CSharp/Lib"]
 	path = CSharp/Lib
 	url = https://github.com/vanBassum/NET_Library.git
+[submodule "ESP32/main/lib"]
+	path = ESP32/main/lib
+	url = https://github.com/vanBassum/ESP_Components.git
