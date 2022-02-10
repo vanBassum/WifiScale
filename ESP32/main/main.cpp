@@ -61,6 +61,12 @@ void TakeSample(Sample* sample, int samples)
 }
 
 
+void TestPost()
+{
+
+}
+
+
 void app_main(void)
 {
     nvs_flash_init();
@@ -85,7 +91,7 @@ void app_main(void)
 		} while (s.Weight < 10);
 
 		tft.DisplayOn();
-
+		TestPost();
 		
 		do
 		{

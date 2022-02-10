@@ -350,3 +350,4 @@ MigrationBackup/
 .ionide/
 ESP32/build
 ESP32/.visualgdb
+ESP32/out

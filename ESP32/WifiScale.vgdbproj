@@ -20,7 +20,7 @@
       <Version>
         <GCC>8.4.0</GCC>
         <GDB>8.1.0</GDB>
-        <Revision>6</Revision>
+        <Revision>7</Revision>
       </Version>
     </ToolchainID>
     <RelativeSourceDirectory>.</RelativeSourceDirectory>
@@ -67,8 +67,8 @@
       <EnableFastUpToDateCheck>true</EnableFastUpToDateCheck>
       <ESPIDFExtension>
         <IDFCheckout>
-          <Version>v4.3.1</Version>
-          <Subdirectory>esp-idf/v4.3.1</Subdirectory>
+          <Version>release/v4.4</Version>
+          <Subdirectory>esp-idf/v4.4</Subdirectory>
           <Type>ESPIDF</Type>
         </IDFCheckout>
         <COMPort>COM30</COMPort>
