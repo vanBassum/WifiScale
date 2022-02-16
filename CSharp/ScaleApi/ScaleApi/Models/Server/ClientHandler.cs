@@ -2,6 +2,7 @@
 using System.Text.Json;
 using System.Text;
 using System.Net.Sockets;
+using System;
 
 namespace ScaleApi.Models.Server
 {
@@ -21,12 +22,20 @@ namespace ScaleApi.Models.Server
         {
             if(sender is TcpSocketClient client)
             {
-                string json = Encoding.ASCII.GetString(e);
-                Command cmd = Command.FromJSON(json);
-                var reply = cmd.Execute(_scopeFactory);
-                string replyJson = JsonSerializer.Serialize(reply);
-                byte[] replyData = Encoding.ASCII.GetBytes(replyJson);
-                Client.SendData(replyData);
+                try
+                {
+                    string json = Encoding.ASCII.GetString(e);
+                    Command cmd = Command.FromJSON(json);
+                    var reply = cmd.Execute(_scopeFactory);
+                    string replyJson = JsonSerializer.Serialize(reply);
+                    byte[] replyData = Encoding.ASCII.GetBytes(replyJson);
+                    Client.SendData(replyData);
+                }
+                catch(Exception ex)
+                {
+                    //TODO Send a
+                }
+                
             }
         }
     }

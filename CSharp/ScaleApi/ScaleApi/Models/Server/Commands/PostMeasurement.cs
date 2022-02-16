@@ -25,6 +25,7 @@ namespace ScaleApi.Models.Server.Commands
                     ReceivedTimestamp = DateTime.Now
                 };
                 dbContext.Measurements.Add(measurement);
+                dbContext.SaveChanges();
                 reply.Success = true;
             }
             return reply;
