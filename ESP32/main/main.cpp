@@ -1,3 +1,4 @@
+
 #include "freertos/FreeRTOS.h"
 #include "esp_system.h"
 #include "esp_event.h"
@@ -10,87 +11,31 @@
 #include "hx711.h"
 #include <list>
 #include <string.h>
-#include <cjson.h>
 #include "lib/tft/tft.h"
 #include "filter.h"
 #include "settings.h"
 #include "lib/tcpip/tcpsocket.h"
 #include "lib/misc/datetime.h"
+#include "lib/rtos/queue.h"
+#include "esp_timer.h"
+#include "sample.h"
+#include "sendsamples.h"
 
 #define SSID "vanBassum"
 #define PSWD "pedaalemmerzak"
 
 HX711 hx711(GPIO_NUM_21, GPIO_NUM_19);
 Filter<uint32_t> scaleFilter(64);
-
 TFT tft = TFT::Get_ILI9341();
-Font *font = 0;
+Font* font = 0;
+
 
 
 extern "C" {
-   void app_main();
+	void app_main();
 }
 
-class Sample
-{
-	const double y1 = 0.f;
-	const double y2 = 9.f;
-	const double x1 = 8535875.f;	
-	const double x2 = 8590340.f;
-	const double dy = y2 - y1;
-	const double dx = x2 - x1;
-	const double a = dy / dx;
-	const double b = y1 - (a*x1);
-public:
-	int Samples = 0;
-	uint32_t Raw = 0;
-	double Weight = 0;
-	DateTime Timestamp;
-	Sample()
-	{
-		
-	}
-	void Set(uint32_t raw) 
-	{
-		Raw = raw;
-		Weight = a * ((double)raw) + b;
-		Timestamp = DateTime::Now();
-	}
-};
-
-void TakeSample(Sample* sample, int samples)
-{
-	uint64_t bigMeas = 0;
-	for (int i = 0; i < samples; i++)
-		bigMeas += hx711.Read();
-	sample->Set(bigMeas / samples);
-	sample->Samples = samples;
-}
-
-
-void PostMeasurement(Sample sample)
-{
-	cJSON* command = cJSON_CreateObject();
-	cJSON_AddNumberToObject(command, "CMD", 0x01);	//Post measurement
-	cJSON* data = cJSON_CreateObject();
-	cJSON_AddNumberToObject(command, "RawWeight", sample.Raw);
-	cJSON_AddNumberToObject(command, "Weight", sample.Weight);
-	cJSON_AddStringToObject(command, "MeasurementTimestamp", sample.Timestamp.ToString().c_str());
-	cJSON_AddItemToObject(command, "Data", data);
-	
-	char* json = cJSON_PrintUnformatted(command);
-	int len = strlen(json);
-	
-	TCPSocket socket;
-	socket.Connect("192.168.11.50", 1000, true);
-	while (!socket.IsConnected()) ;
-	socket.Send((uint8_t*)json, len);
-	cJSON_free(command);
-	free(json);
-	
-}
-
-esp_err_t event_handler(void *ctx, system_event_t *event)
+esp_err_t event_handler(void* ctx, system_event_t* event)
 {
 	return ESP_OK;
 }
@@ -120,6 +65,15 @@ void StartWIFI()
 }
 
 
+void TakeSample(Sample* sample, int samples)
+{
+	uint64_t bigMeas = 0;
+	for (int i = 0; i < samples; i++)
+		bigMeas += hx711.Read();
+	sample->Set(bigMeas / samples);
+	sample->Samples = samples;
+}
+
 void DisplaySample(Sample s, Color c)
 {
 	char buf[32];
@@ -129,7 +83,7 @@ void DisplaySample(Sample s, Color c)
 	tft.DrawString(font, 0, 64 + 32, buf, c);
 }
 
-enum class State : uint8_t		//Don't change the existing numbers, its used for logging. You can add extra states.
+enum class State : uint8_t
 {
 	Standby,
 	WaitForstable,
@@ -139,69 +93,67 @@ enum class State : uint8_t		//Don't change the existing numbers, its used for lo
 
 void app_main(void)
 {
-    nvs_flash_init();
+	nvs_flash_init();
 	StartWIFI();
 	tft.Init();
 	font = new Font(ILGH32XB);
 	tft.FillScreen(Color(0, 0, 0));
 	tft.SetFontFill(Color(0, 0, 0));
 	hx711.SetGain(2);
+	InitSendSamples();
 
-	Sample s;
-	State prevState = State::Standby;
-	State actState 	= State::Standby;
-	State nextState = State::Standby;
-		
+	Sample sample;
+	State prvState = State::Standby;
+	State actState = State::Standby;
+	State nxtState = State::Standby;
 	bool onEntry = true;
-		
+
 	while (true)
 	{
-		
+
 		switch (actState)
 		{
 		case State::Standby:
 			tft.DrawString(font, 0, 128, "Standby        ", Color(255, 0, 0));
-			TakeSample(&s, 5);
-			DisplaySample(s, Color(255, 0, 0));
-			if (s.Weight > 2)
-				nextState = State::WaitForstable;
+			TakeSample(&sample, 5);
+			DisplaySample(sample, Color(255, 0, 0));
+			if (sample.Weight > 2)
+				nxtState = State::WaitForstable;
 			break;
-			
-		case State::WaitForstable:	
+
+		case State::WaitForstable:
 			tft.DrawString(font, 0, 128, "WaitForstable  ", Color(255, 0, 0));
-			TakeSample(&s, 5);
-			DisplaySample(s, Color(255, 0, 0));
-			if (s.Weight > 70)
-				nextState = State::CollectSample;
-			else if(s.Weight < 2)
-				nextState = State::Standby;
+			TakeSample(&sample, 5);
+			DisplaySample(sample, Color(255, 0, 0));
+			if (sample.Weight > 70)
+				nxtState = State::CollectSample;
+			else if (sample.Weight < 2)
+				nxtState = State::Standby;
 			break;
-			
+
 		case State::CollectSample:
 			tft.DrawString(font, 0, 128, "CollectSample  ", Color(255, 0, 0));
-			TakeSample(&s, 20);		
-			DisplaySample(s, Color(0, 255, 0));
-			PostMeasurement(s);
-			nextState = State::Cooldown;
+			TakeSample(&sample, 20);
+			DisplaySample(sample, Color(0, 255, 0));
+			EnqueueSample(sample);
+			nxtState = State::Cooldown;
 			break;
-			
+
 		case State::Cooldown:
 			tft.DrawString(font, 0, 128, "Cooldown       ", Color(255, 0, 0));
-			TakeSample(&s, 5);
-			if (s.Weight < 2)
-				nextState = State::Standby;
+			TakeSample(&sample, 5);
+			if (sample.Weight < 2)
+				nxtState = State::Standby;
 			break;
-			
 		}
+
 		onEntry = false;
-		if (actState != nextState)
+		if (actState != nxtState)
 		{
-			prevState = actState;
-			actState = nextState;
+			prvState = actState;
+			actState = nxtState;
 			onEntry = true;
-			//task->Notify((uint32_t) Events::StateChanged); //Setting this will skip the 1sec delay and let the new state know its its first cycle.
 		}
 	}
 }
 
-	
