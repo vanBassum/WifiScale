@@ -57,7 +57,7 @@ void StartWIFI()
 	ESP_ERROR_CHECK(esp_wifi_start());
 	ESP_ERROR_CHECK(esp_wifi_connect());
 
-	setenv("TZ", "UTC-1UTC,M3.5.0,M10.5.0/3", 1);
+	setenv("TZ", "CET-1CEST,M3.5.0,M10.5.0/3", 1);
 	tzset();
 	sntp_setoperatingmode(SNTP_OPMODE_POLL);
 	sntp_setservername(0, "pool.ntp.org");
@@ -119,6 +119,8 @@ void app_main(void)
 			DisplaySample(sample, Color(255, 0, 0));
 			if (sample.Weight > 2)
 				nxtState = State::WaitForstable;
+			else
+				vTaskDelay(100/portTICK_PERIOD_MS);
 			break;
 
 		case State::WaitForstable:
@@ -144,6 +146,8 @@ void app_main(void)
 			TakeSample(&sample, 5);
 			if (sample.Weight < 2)
 				nxtState = State::Standby;
+			else
+				vTaskDelay(100/portTICK_PERIOD_MS);
 			break;
 		}
 
