@@ -107,16 +107,17 @@ void app_main(void)
 	State actState = State::Standby;
 	State nxtState = State::Standby;
 	bool onEntry = true;
-
 	while (true)
 	{
 
 		switch (actState)
 		{
 		case State::Standby:
+			if (onEntry)
+				tft.BacklightOff();
 			tft.DrawString(font, 0, 128, "Standby        ", Color(255, 0, 0));
-			TakeSample(&sample, 5);
 			DisplaySample(sample, Color(255, 0, 0));
+			TakeSample(&sample, 5);
 			if (sample.Weight > 2)
 				nxtState = State::WaitForstable;
 			else
@@ -124,6 +125,8 @@ void app_main(void)
 			break;
 
 		case State::WaitForstable:
+			if (onEntry)
+				tft.BacklightOn();
 			tft.DrawString(font, 0, 128, "WaitForstable  ", Color(255, 0, 0));
 			TakeSample(&sample, 5);
 			DisplaySample(sample, Color(255, 0, 0));
