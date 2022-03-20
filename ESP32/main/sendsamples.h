@@ -42,7 +42,7 @@ void SendTaskHandler(FreeRTOS::NotifyableTask* task, void* args)
 					ESP_LOGI("sendsample", "Send!!! %s", json);
 					int len = strlen(json);
 					socket.Send((uint8_t*)json, len);
-					cJSON_free(command);
+					cJSON_Delete(command);
 					free(json);
 					delete sample;
 					sample = NULL;
