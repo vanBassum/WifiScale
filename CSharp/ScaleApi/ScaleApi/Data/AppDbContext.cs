@@ -10,6 +10,6 @@ namespace ScaleApi.Data
         }
 
         public DbSet<WeightMeasurement> Measurements { get; set; }
-
+        public DbSet<PowerMeasurement> PowerMeasurements { get; set; }
     }
 }

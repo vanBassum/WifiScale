@@ -32,6 +32,7 @@ namespace ScaleApi.Models.Server
         {
             ClientHandler handler = new ClientHandler(e, _scopeFactory);
             _handlers.Add(handler);
+            Console.WriteLine($"Client accepted: {e.RemoteEndPoint}");
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
